@@ -1,53 +1,127 @@
 ---
-import { Picture } from "astro:assets";
-import heroImage from "@/assets/hero.png";
-import Link from "@/components/ui/link.astro";
-import { Icon } from "astro-icon/components";
+import heroImage from "@/assets/hero.avif";
+import heroImage2 from "@/assets/hero-2.avif";
 ---
+
+<style>
+  .wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    z-index: 15;
+    transform: rotate(180deg);
+  }
+
+  .wave svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 100px;
+    transform: scaleX(1.1);
+  }
+
+  @media (max-width: 768px) {
+    .wave svg {
+      height: 60px;
+    }
+  }
+
+  .wave .shape-fill {
+    fill: #FFFFFF;
+  }
+
+  @keyframes wave-animation {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .wave-animate {
+    animation: wave-animation 20s linear infinite;
+  }
+</style>
+
+<section>
+  <div class="relative w-full h-screen overflow-hidden">
+    <img
+      src={heroImage.src}
+      alt="obmain ingeniería hero image - obmain.co"
+      class="w-full h-full object-cover"
+    />
+    <div class="absolute inset-0 bg-black/70 z-10"></div>
+
+    <div
+      class="absolute top-0 left-0 w-full z-20 flex items-center justify-between px-8 py-5 bg-white/0">
+    </div>
+
+    <div
+      class="absolute inset-0 flex flex-col lg:flex-row justify-center items-center text-center lg:text-left text-white px-6 z-20 gap-8 lg:gap-12">
+      <div class="flex-1 max-w-2xl">
+        <h1
+          class="font-bold text-5xl lg:text-6xl xl:text-7xl lg:tracking-tight xl:tracking-tighter text-[#98060c] text-center lg:text-left">
+          OBMAIN
+        </h1>
+        <h2
+          class="font-normal text-3xl lg:text-4xl xl:text-5xl text-center lg:text-left text-[#f0b000] mt-2">
+          INGENIERIA
+        </h2>
+        <p
+          class="text-lg md:text-xl opacity-90 mb-8 mt-6 text-center lg:text-left">
+          Somos especialistas en obras civiles, eléctricas, mecánicas y
+          estructurales, ofreciendo soluciones integrales para el sector público
+          y privado. Garantizamos calidad, cumplimiento y seguridad en cada
+          proyecto de construcción y mantenimiento.
+        </p>
+        <button>
+          <a
+            href="#feature"
+            class="bg-[#99060b] hover:bg-[#f0b000] text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-colors duration-300">
+            Conoce más
+          </a>
+        </button>
+      </div>
+
+      <div class="flex-1 max-w-xl">
+        <div class="relative">
+          <div
+            class="tilt-effect"
+            data-tilt
+            data-tilt-max="10"
+            data-tilt-speed="400"
+            data-tilt-perspective="1000">
+            <div class="glass-card rounded-2xl p-1">
+              <img
+                src={heroImage2.src}
+                alt="obmain Ingeniería - Construcción y Mantenimiento"
+                class="rounded-xl w-full h-auto"
+              />
+            </div>
+          </div>
+          <div
+            class="absolute -bottom-6 -left-6 w-24 h-24 bg-neon rounded-full opacity-20 animate-pulse-slow -z-10">
+          </div>
+          <div
+            class="absolute -top-6 -right-6 w-32 h-32 bg-cyber rounded-full opacity-20 animate-pulse-slow -z-10"
+            style="animation-delay: 2s;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" style="display: block;">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+      </svg>
+    </div>
+  </div>
+</section>
 
 <main
   class="grid lg:grid-cols-2 place-items-center pt-16 pb-8 md:pt-12 md:pb-24">
-  <div class="py-6 md:order-1 hidden md:block">
-    <Picture
-      src={heroImage}
-      alt="Astronaut in the air"
-      widths={[200, 400, 600]}
-      sizes="(max-width: 800px) 100vw, 620px"
-      loading="eager"
-      format="avif"
-    />
-  </div>
-  <div>
-    <h1
-      class="text-5xl lg:text-6xl xl:text-7xl font-bold lg:tracking-tight xl:tracking-tighter">
-      Marketing website done with Astro
-    </h1>
-    <p class="text-lg mt-4 text-slate-600 max-w-xl">
-      Astroship is a starter template for startups, marketing websites & landing
-      pages.<wbr /> Built with Astro.build and TailwindCSS. You can quickly create
-      any website with this starter.
-    </p>
-    <div class="mt-6 flex flex-col sm:flex-row gap-3">
-      <Link
-        href="#"
-        href="https://web3templates.com/templates/astroship-starter-website-template-for-astro"
-        target="_blank"
-        class="flex gap-1 items-center justify-center"
-        rel="noopener">
-        <Icon class="text-white w-5 h-5" name="bx:bxs-cloud-download" />
-
-        Download for Free
-      </Link>
-      <Link
-        size="lg"
-        style="outline"
-        rel="noopener"
-        href="https://github.com/surjithctly/astroship"
-        class="flex gap-1 items-center justify-center"
-        target="_blank">
-        <Icon class="text-black w-4 h-4" name="bx:bxl-github" />
-        GitHub Repo
-      </Link>
-    </div>
-  </div>
 </main>

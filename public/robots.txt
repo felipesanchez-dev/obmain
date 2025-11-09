@@ -1,4 +1,53 @@
+# robots.txt para OBMAIN Ingeniería
+# Control de indexación y acceso para motores de búsqueda
+# Última actualización: 2025
+
+# Permitir acceso a todos los bots de búsqueda principales
 User-agent: *
 Allow: /
+Crawl-delay: 0
 
-Sitemap: http://astroship.web3templates.com/sitemap-index.xml
+# Google Bot - Rastreador principal de Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Google Bot para imágenes
+User-agent: Googlebot-Image
+Allow: /
+
+# Bing Bot - Rastreador de Microsoft Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Permitir explícitamente páginas importantes
+Allow: /about
+Allow: /contact
+Allow: /pricing
+Allow: /blog
+Allow: /blog/*
+
+# Bloquear archivos y recursos que no deberían indexarse
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*?*utm_
+Disallow: /*?*ref=
+Disallow: /*?*session=
+
+# Permitir recursos importantes para el renderizado
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Sitemaps - Facilita el descubrimiento de contenido
+Sitemap: https://www.obmain.co/sitemap-index.xml
+Sitemap: https://www.obmain.co/sitemap.xml
+
+# Información del host
+Host: https://www.obmain.co

@@ -3,67 +3,108 @@ import { SEO } from "astro-seo";
 import Footer from "@/components/footer.astro";
 import Navbar from "@/components/navbar/navbar.astro";
 import "@fontsource-variable/inter/index.css";
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/bricolage-grotesque/index.css";
 import "../styles/global.css";
 
 export interface Props {
   title: string;
+  description?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
+const { title, description } = Astro.props;
 
+const siteName = "OBMAIN Ingeniería";
+const defaultDescription =
+  description ||
+  "OBMAIN ofrece soluciones integrales en construcción e ingeniería civil, eléctrica y mecánica en Tolima. Garantizamos calidad, cumplimiento y sostenibilidad en cada proyecto.";
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
 const resolvedImageWithDomain = new URL(
   "/opengraph.jpg",
   Astro.site
 ).toString();
 
-const { title } = Astro.props;
-
 const makeTitle = title
-  ? title + " | " + "Astroship"
-  : "Astroship - Starter Template for Astro with Tailwind CSS";
+  ? `${title} | ${siteName}`
+  : `${siteName} - Ingeniería, Construcción y Mantenimiento`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- <link rel="preload" as="image" href={src} alt="Hero" /> -->
     <SEO
       title={makeTitle}
-      description="Astroship is a starter website template for Astro built with TailwindCSS."
+      description={defaultDescription}
       canonical={canonicalURL}
       twitter={{
-        creator: "@surjithctly",
-        site: "@web3templates",
+        creator: "@obmainco",
+        site: "@obmainco",
         card: "summary_large_image",
       }}
       openGraph={{
         basic: {
           url: canonicalURL,
           type: "website",
-          title: `Astroship - Starter Template for Astro`,
+          title: makeTitle,
           image: resolvedImageWithDomain,
         },
         image: {
-          alt: "Astroship Homepage Screenshot",
+          alt: "OBMAIN Ingeniería - Construcción y Mantenimiento",
         },
       }}
     />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "OBMAIN Ingeniería",
+        "url": "https://www.obmain.co",
+        "logo": "https://www.obmain.co/logo.png",
+        "description": "Empresa especializada en construcción, ingeniería civil, eléctrica y mecánica en Tolima, comprometida con la calidad y la sostenibilidad.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+57 320 726 5699",
+          "contactType": "Customer Service",
+          "areaServed": "CO",
+          "availableLanguage": ["es"]
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Supermanza 4 - Manzana 2 - Casa 1",
+          "addressLocality": "Ibagué",
+          "addressRegion": "Tolima",
+          "addressCountry": "CO"
+        }
+      }
+    </script>
   </head>
   <body>
     <Navbar />
-    <slot />
+    <main class="navbar-spacer">
+      <slot />
+    </main>
     <Footer />
+
     <style is:global>
-      /* Improve Page speed */
-      /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
       img {
         content-visibility: auto;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      .navbar-spacer {
+        padding-top: 90px;
+      }
+      body {
+        position: relative;
       }
     </style>
   </body>
