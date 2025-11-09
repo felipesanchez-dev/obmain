@@ -1,0 +1,182 @@
+---
+const faqs = [
+  {
+    id: 1,
+    question: "¿Qué servicios ofrece OBMAIN?",
+    answer:
+      "OBMAIN ofrece soluciones integrales en ingeniería civil, eléctrica, mecánica y estructural. Realizamos construcción y mantenimiento de edificaciones, vías, sistemas eléctricos industriales, subestaciones, estructuras metálicas y obras de drenaje, cumpliendo con la normatividad y estándares de calidad vigentes.",
+  },
+  {
+    id: 2,
+    question: "¿En qué zonas del país opera OBMAIN?",
+    answer:
+      "Prestamos nuestros servicios principalmente en el Tolima y regiones cercanas, con capacidad operativa para desarrollar proyectos en cualquier parte de Colombia, tanto en el sector público como privado.",
+  },
+  {
+    id: 3,
+    question: "¿Qué diferencia a OBMAIN de otras empresas del sector?",
+    answer:
+      "Nuestra fortaleza radica en la experiencia comprobada, el cumplimiento, la responsabilidad ambiental y un equipo altamente calificado que garantiza resultados seguros, eficientes y sostenibles.",
+  },
+  {
+    id: 4,
+    question: "¿OBMAIN cumple con normas de seguridad industrial y ambiental?",
+    answer:
+      "Sí. OBMAIN cumple rigurosamente con todas las normas de seguridad industrial, salud ocupacional y gestión ambiental exigidas por la ley. Además, contamos con el visto bueno de la <a href='https://www.fundacionsandimas.org/' target='_blank' rel='noopener noreferrer' class='faq-link'><span>Fundación San Dimas</span></a> y con la supervisión constante de entidades especializadas que garantizan la correcta aplicación de protocolos de seguridad, manejo responsable de residuos y sostenibilidad en cada obra. Nuestro compromiso es proteger la integridad de nuestro equipo, de la comunidad y del entorno donde desarrollamos nuestras operaciones.",
+  },
+  {
+    id: 5,
+    question: "¿Puedo solicitar asesoría o una cotización personalizada?",
+    answer:
+      "Por supuesto. Puedes contactarnos a través de nuestro formulario web, correo electrónico o línea directa. Nuestro equipo técnico evaluará tus necesidades y te brindará una asesoría personalizada sin compromiso.",
+  },
+  {
+    id: 6,
+    question: "¿Qué tipo de clientes atiende OBMAIN?",
+    answer:
+      "Trabajamos con empresas privadas, entidades públicas, instituciones industriales y proyectos residenciales, adaptando cada solución a las necesidades y estándares de nuestros clientes.",
+  },
+];
+---
+
+<style>
+  .faq-item {
+    transition: all 300ms ease;
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      max-height 400ms ease,
+      padding 400ms ease,
+      opacity 300ms ease;
+    opacity: 0;
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 500px;
+    opacity: 1;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .faq-icon {
+    transition: transform 300ms ease;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-question:hover {
+    background-color: rgba(152, 6, 12, 0.05);
+  }
+
+  /* --- Enlace con estilo especial y animación --- */
+  .faq-link {
+    color: #98060c;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+
+  .faq-link::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -2px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: #98060c;
+    transition: width 0.3s ease;
+  }
+
+  .faq-link:hover {
+    color: #c20a10;
+  }
+
+  .faq-link:hover::after {
+    width: 100%;
+  }
+</style>
+
+<section class="py-16 md:py-24">
+  <div class="max-w-4xl mx-auto px-6">
+    <!-- Encabezado -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+        Preguntas Frecuentes
+      </h2>
+      <p class="text-lg text-slate-600">
+        Resolvemos tus dudas sobre nuestros servicios y procesos
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      {
+        faqs.map((faq, index) => (
+          <div
+            class={`faq-item border border-slate-200 rounded-xl overflow-hidden ${index === 0 ? "active" : ""}`}
+            data-faq-id={faq.id}>
+            <button
+              class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 transition-colors"
+              aria-expanded={index === 0 ? "true" : "false"}
+              data-faq-btn={faq.id}>
+              <span class="text-lg font-semibold text-slate-900 pr-4">
+                {faq.question}
+              </span>
+              <svg
+                class="faq-icon w-6 h-6 text-[#98060c] shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div class="faq-answer px-6">
+              <p class="text-slate-600 leading-relaxed" set:html={faq.answer}></p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const faqButtons = document.querySelectorAll("[data-faq-btn]");
+
+    faqButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const faqId = button.getAttribute("data-faq-btn");
+        const faqItem = document.querySelector(`[data-faq-id="${faqId}"]`);
+        const isActive = faqItem.classList.contains("active");
+
+        document.querySelectorAll(".faq-item").forEach((item) => {
+          if (item !== faqItem) {
+            item.classList.remove("active");
+            const btn = item.querySelector("[data-faq-btn]");
+            if (btn) btn.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        if (isActive) {
+          faqItem.classList.remove("active");
+          button.setAttribute("aria-expanded", "false");
+        } else {
+          faqItem.classList.add("active");
+          button.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+  });
+</script>
