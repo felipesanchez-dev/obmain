@@ -20,7 +20,7 @@ const defaultDescription =
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
 const resolvedImageWithDomain = new URL(
-  "/opengraph.jpg",
+  "/logo.png",
   Astro.site
 ).toString();
 
@@ -34,7 +34,7 @@ const makeTitle = title
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
     <meta name="theme-color" content="#0f172a" />
     <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />

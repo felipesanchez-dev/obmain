@@ -2,12 +2,22 @@
 import Button from "./ui/button.astro";
 ---
 
-<form id="form" class="needs-validation" novalidate>
+<form
+  action="https://api.web3forms.com/submit"
+  method="POST"
+  id="form"
+  class="needs-validation"
+  novalidate>
+  <input
+    type="hidden"
+    name="access_key"
+    value="398f20fa-f992-4958-9e8a-7bc9d0e66999"
+  />
   <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
   <div class="mb-5">
     <input
       type="text"
-      placeholder="Nombre Completo"
+      placeholder="Nombre completo"
       required
       class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
       name="name"
@@ -20,7 +30,7 @@ import Button from "./ui/button.astro";
     <label for="email_address" class="sr-only">Correo Electrónico</label><input
       id="email_address"
       type="email"
-      placeholder="Correo Electrónico"
+      placeholder="Correo electrónico"
       name="email"
       required
       class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
@@ -36,15 +46,31 @@ import Button from "./ui/button.astro";
     <input
       type="tel"
       placeholder="Teléfono (opcional)"
-      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
       name="phone"
+      class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
     />
+  </div>
+  <div class="mb-5">
+    <select
+      name="subject"
+      required
+      class="w-full px-4 py-3 border-2 text-gray-800 rounded-md outline-hidden focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100">
+      <option value="">Selecciona un servicio</option>
+      <option value="obras-civiles">Obras Civiles</option>
+      <option value="servicios-electricos">Servicios Eléctricos</option>
+      <option value="soluciones-mecanicas">Soluciones Mecánicas</option>
+      <option value="cotizacion">Solicitud de Cotización</option>
+      <option value="otro">Otro</option>
+    </select>
+    <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
+      Por favor selecciona un tipo de servicio.
+    </div>
   </div>
   <div class="mb-3">
     <textarea
       name="message"
       required
-      placeholder="Tu Mensaje"
+      placeholder="Tu mensaje"
       class="w-full px-4 py-3 border-2 placeholder:text-gray-800 rounded-md outline-hidden h-36 focus:ring-4 border-gray-300 focus:border-gray-600 ring-gray-100"
     ></textarea>
     <div class="empty-feedback invalid-feedback text-red-400 text-sm mt-1">
@@ -78,76 +104,50 @@ import Button from "./ui/button.astro";
 <script is:inline>
   const form = document.getElementById("form");
   const result = document.getElementById("result");
-  const submitButton = form.querySelector('button[type="submit"]');
 
-  form.addEventListener("submit", async function (e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
     form.classList.add("was-validated");
-
     if (!form.checkValidity()) {
       form.querySelectorAll(":invalid")[0].focus();
       return;
     }
-
-    // Verificar botcheck (honeypot anti-spam)
-    const botcheck = form.querySelector('[name="botcheck"]');
-    if (botcheck && botcheck.checked) {
-      return; // Es un bot, no enviar
-    }
-
     const formData = new FormData(form);
-    const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      message: formData.get("message"),
-    };
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
 
-    // Deshabilitar botón y mostrar loading
-    submitButton.disabled = true;
-    submitButton.textContent = "Enviando...";
-    result.innerHTML = "";
-    result.className = "mt-3 text-center";
+    result.innerHTML = "Enviando...";
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const json = await response.json();
-
-      if (response.ok && json.success) {
-        result.classList.add("text-green-600", "font-semibold");
-        result.innerHTML = json.message;
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: json,
+    })
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status == 200) {
+          result.classList.add("text-green-500");
+          result.innerHTML =
+            "¡Mensaje enviado con éxito! Te contactaremos pronto.";
+        } else {
+          console.log(response);
+          result.classList.add("text-red-500");
+          result.innerHTML = json.message;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        result.innerHTML = "¡Algo salió mal! Por favor intenta de nuevo.";
+      })
+      .then(function () {
         form.reset();
         form.classList.remove("was-validated");
-      } else {
-        result.classList.add("text-red-600", "font-semibold");
-        result.innerHTML = json.message || "Error al enviar el mensaje.";
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      result.classList.add("text-red-600", "font-semibold");
-      result.innerHTML = "Error de conexión. Por favor intenta nuevamente.";
-    } finally {
-      // Rehabilitar botón
-      submitButton.disabled = false;
-      submitButton.textContent = "Enviar Mensaje";
-
-      // Ocultar mensaje después de 5 segundos
-      setTimeout(() => {
-        result.style.opacity = "0";
-        result.style.transition = "opacity 0.5s";
         setTimeout(() => {
-          result.innerHTML = "";
-          result.className = "mt-3 text-center";
-          result.style.opacity = "1";
-        }, 500);
-      }, 5000);
-    }
+          result.style.display = "none";
+        }, 5000);
+      });
   });
 </script>
