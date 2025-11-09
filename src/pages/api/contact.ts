@@ -1,33 +1,33 @@
-import type { APIRoute } from 'astro';
-import nodemailer from 'nodemailer';
+import type { APIRoute } from "astro";
+import nodemailer from "nodemailer";
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     // Leer el body de manera más segura
-    const contentType = request.headers.get('content-type');
+    const contentType = request.headers.get("content-type");
     let data;
 
-    if (contentType?.includes('application/json')) {
+    if (contentType?.includes("application/json")) {
       const text = await request.text();
       if (!text) {
         return new Response(
-          JSON.stringify({ 
-            success: false, 
-            message: 'No se recibieron datos.' 
+          JSON.stringify({
+            success: false,
+            message: "No se recibieron datos.",
           }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
+          { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }
       data = JSON.parse(text);
     } else {
       const formData = await request.formData();
       data = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        message: formData.get('message')
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        message: formData.get("message"),
       };
     }
 
@@ -36,38 +36,39 @@ export const POST: APIRoute = async ({ request }) => {
     // Validar datos
     if (!name || !email || !message) {
       return new Response(
-        JSON.stringify({ 
-          success: false, 
-          message: 'Por favor completa todos los campos requeridos.' 
+        JSON.stringify({
+          success: false,
+          message: "Por favor completa todos los campos requeridos.",
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
     // Verificar que las credenciales estén configuradas
     const emailPassword = import.meta.env.EMAIL_PASSWORD;
-    
-    console.log('EMAIL_PASSWORD está configurado:', !!emailPassword);
-    console.log('Longitud de contraseña:', emailPassword?.length || 0);
-    
-    if (!emailPassword || emailPassword === 'TU_CONTRASEÑA_AQUI') {
-      console.error('EMAIL_PASSWORD no está configurado en .env');
+
+    console.log("EMAIL_PASSWORD está configurado:", !!emailPassword);
+    console.log("Longitud de contraseña:", emailPassword?.length || 0);
+
+    if (!emailPassword || emailPassword === "TU_CONTRASEÑA_AQUI") {
+      console.error("EMAIL_PASSWORD no está configurado en .env");
       return new Response(
-        JSON.stringify({ 
-          success: false, 
-          message: 'Error de configuración del servidor. Contacta al administrador.' 
+        JSON.stringify({
+          success: false,
+          message:
+            "Error de configuración del servidor. Contacta al administrador.",
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
 
     // Configurar el transporter de nodemailer con Gmail
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: {
-        user: 'jfelipe.9121@gmail.com',
+        user: "jfelipe.9121@gmail.com",
         pass: emailPassword,
       },
     });
@@ -75,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
     // Configurar el contenido del email
     const mailOptions = {
       from: '"OBMAIN Ingeniería - Contacto Web" <jfelipe.9121@gmail.com>',
-      to: 'jfelipe.9121@gmail.com',
+      to: "jfelipe.9121@gmail.com",
       replyTo: email,
       subject: `Nuevo mensaje desde OBMAIN - ${name}`,
       html: `
@@ -108,20 +109,26 @@ export const POST: APIRoute = async ({ request }) => {
                 <div class="label">📧 Email:</div>
                 <div class="value"><a href="mailto:${email}">${email}</a></div>
               </div>
-              ${phone ? `
+              ${
+                phone
+                  ? `
               <div class="field">
                 <div class="label">📱 Teléfono:</div>
                 <div class="value">${phone}</div>
               </div>
-              ` : ''}
+              `
+                  : ""
+              }
               <div class="field">
                 <div class="label">💬 Mensaje:</div>
-                <div class="value">${message.replace(/\n/g, '<br>')}</div>
+                <div class="value">${message.replace(/\n/g, "<br>")}</div>
               </div>
             </div>
             <div class="footer">
               <p>Este mensaje fue enviado desde el formulario de contacto de obmain.co</p>
-              <p>Fecha: ${new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' })}</p>
+              <p>Fecha: ${new Date().toLocaleString("es-CO", {
+                timeZone: "America/Bogota",
+              })}</p>
             </div>
           </div>
         </body>
@@ -132,14 +139,14 @@ Nuevo mensaje de contacto - OBMAIN Ingeniería
 
 Nombre: ${name}
 Email: ${email}
-${phone ? `Teléfono: ${phone}` : ''}
+${phone ? `Teléfono: ${phone}` : ""}
 
 Mensaje:
 ${message}
 
 ---
 Enviado desde obmain.co
-Fecha: ${new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' })}
+Fecha: ${new Date().toLocaleString("es-CO", { timeZone: "America/Bogota" })}
       `,
     };
 
@@ -147,21 +154,20 @@ Fecha: ${new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' })}
     await transporter.sendMail(mailOptions);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: '¡Mensaje enviado con éxito! Te contactaremos pronto.' 
+      JSON.stringify({
+        success: true,
+        message: "¡Mensaje enviado con éxito! Te contactaremos pronto.",
       }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
+      { status: 200, headers: { "Content-Type": "application/json" } }
     );
-
   } catch (error) {
-    console.error('Error al enviar email:', error);
+    console.error("Error al enviar email:", error);
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        message: 'Error al enviar el mensaje. Por favor intenta nuevamente.' 
+      JSON.stringify({
+        success: false,
+        message: "Error al enviar el mensaje. Por favor intenta nuevamente.",
       }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 };

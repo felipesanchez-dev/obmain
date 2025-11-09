@@ -2,10 +2,7 @@
 import Button from "./ui/button.astro";
 ---
 
-<form
-  id="form"
-  class="needs-validation"
-  novalidate>
+<form id="form" class="needs-validation" novalidate>
   <input type="checkbox" class="hidden" style="display:none" name="botcheck" />
   <div class="mb-5">
     <input
@@ -86,7 +83,7 @@ import Button from "./ui/button.astro";
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
     form.classList.add("was-validated");
-    
+
     if (!form.checkValidity()) {
       form.querySelectorAll(":invalid")[0].focus();
       return;
@@ -100,10 +97,10 @@ import Button from "./ui/button.astro";
 
     const formData = new FormData(form);
     const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      message: formData.get('message')
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      message: formData.get("message"),
     };
 
     // Deshabilitar botón y mostrar loading
@@ -140,7 +137,7 @@ import Button from "./ui/button.astro";
       // Rehabilitar botón
       submitButton.disabled = false;
       submitButton.textContent = "Enviar Mensaje";
-      
+
       // Ocultar mensaje después de 5 segundos
       setTimeout(() => {
         result.style.opacity = "0";
